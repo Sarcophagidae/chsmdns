@@ -401,19 +401,25 @@ sub searchPiece{
 sub catchTheQueen{
 	my $field = shift;
 	my $size = shift;
-	my $color = shift || 'w';
+	my $color = 'w';
 	my $deep = shift || 0;
 	my $maxDeep = shift || 2;
 	
 	#Если глубина больше максимально, то сворачиваемся
-	return -1 if ($deep >= $maxDeep);
-	#Поиск текущего ферзя. Если нет, то значит проигрышь.
-	return -2 if (searchPiece($field, $color, 'q', $size) == -1);
-	#Если нет вражеского, значит победа.
-	return 1 if (searchPiece($field, ($color eq 'w')?'b':'w', 'q', $size) == -1);
+	return 0 if ($deep >= $maxDeep);
+
+	my @movFields = makeAllMoves($field, $color, $size);
+
+	foreach my $f (@movFields){
+		#Если нет вражеского, значит победа.
+		return 1 if (searchPiece($field, 'b', 'q', $size) == -1);
+	}
 	
-	my @moves = makeAllMoves($field, $color, $size);
 	
+	foreach my $f (@movFields){
+		:
+		return -1 if (searchPiece($field, $color, 'q', $size) == -1);
+	}
 }
 
 
